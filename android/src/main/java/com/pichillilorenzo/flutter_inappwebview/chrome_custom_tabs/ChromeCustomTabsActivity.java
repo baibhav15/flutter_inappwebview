@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -206,10 +207,14 @@ public class ChromeCustomTabsActivity extends Activity implements MethodChannel.
     extras.putString(ActionBroadcastReceiver.KEY_ACTION_VIEW_ID, id);
     extras.putString(ActionBroadcastReceiver.CHROME_MANAGER_ID, manager.id);
     actionIntent.putExtras(extras);
-
-    return PendingIntent.getBroadcast(
-            this, actionSourceId, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-  }
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        return PendingIntent.getBroadcast(
+                this, actionSourceId, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+      }else{
+        return PendingIntent.getBroadcast(
+                this, actionSourceId, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+      }
+    }
 
   public void dispose() {
     channel.setMethodCallHandler(null);
